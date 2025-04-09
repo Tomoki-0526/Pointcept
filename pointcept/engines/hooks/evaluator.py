@@ -81,7 +81,7 @@ class ClsEvaluator(HookBase):
             self.trainer.logger.info(
                 "Class_{idx}-{name} Result: iou/accuracy {iou:.4f}/{accuracy:.4f}".format(
                     idx=i,
-                    name=self.trainer.cfg.data.names[i],
+                    name=self.trainer.cfg.data.names[0][i],
                     iou=iou_class[i],
                     accuracy=acc_class[i],
                 )
@@ -183,7 +183,7 @@ class SemSegEvaluator(HookBase):
             self.trainer.logger.info(
                 "Class_{idx}-{name} Result: iou/accuracy {iou:.4f}/{accuracy:.4f}".format(
                     idx=i,
-                    name=self.trainer.cfg.data.names[i],
+                    name=self.trainer.cfg.data.names[0][i],
                     iou=iou_class[i],
                     accuracy=acc_class[i],
                 )
@@ -197,7 +197,7 @@ class SemSegEvaluator(HookBase):
             if self.write_cls_iou:
                 for i in range(self.trainer.cfg.data.num_classes):
                     self.trainer.writer.add_scalar(
-                        f"val/cls_{i}-{self.trainer.cfg.data.names[i]} IoU",
+                        f"val/cls_{i}-{self.trainer.cfg.data.names[0][i]} IoU",
                         iou_class[i],
                         current_epoch,
                     )
@@ -225,7 +225,7 @@ class InsSegEvaluator(HookBase):
 
     def before_train(self):
         self.valid_class_names = [
-            self.trainer.cfg.data.names[i]
+            self.trainer.cfg.data.names[0][i]
             for i in range(self.trainer.cfg.data.num_classes)
             if i not in self.segment_ignore_index
         ]
@@ -249,7 +249,7 @@ class InsSegEvaluator(HookBase):
         gt_instances = dict()
         for i in range(self.trainer.cfg.data.num_classes):
             if i not in self.segment_ignore_index:
-                gt_instances[self.trainer.cfg.data.names[i]] = []
+                gt_instances[self.trainer.cfg.data.names[0][i]] = []
         instance_ids, idx, counts = np.unique(
             instance, return_index=True, return_counts=True
         )
@@ -266,13 +266,13 @@ class InsSegEvaluator(HookBase):
             gt_inst["med_dist"] = -1.0
             gt_inst["vert_count"] = counts[i]
             gt_inst["matched_pred"] = []
-            gt_instances[self.trainer.cfg.data.names[segment_ids[i]]].append(gt_inst)
+            gt_instances[self.trainer.cfg.data.names[0][segment_ids[i]]].append(gt_inst)
 
         # get pred instances and associate with gt
         pred_instances = dict()
         for i in range(self.trainer.cfg.data.num_classes):
             if i not in self.segment_ignore_index:
-                pred_instances[self.trainer.cfg.data.names[i]] = []
+                pred_instances[self.trainer.cfg.data.names[0][i]] = []
         instance_id = 0
         for i in range(len(pred["pred_classes"])):
             if pred["pred_classes"][i] in self.segment_ignore_index:
@@ -289,7 +289,7 @@ class InsSegEvaluator(HookBase):
             )
             if pred_inst["vert_count"] < self.min_region_sizes:
                 continue  # skip if empty
-            segment_name = self.trainer.cfg.data.names[pred_inst["segment_id"]]
+            segment_name = self.trainer.cfg.data.names[0][pred_inst["segment_id"]]
             matched_gt = []
             for gt_idx, gt_inst in enumerate(gt_instances[segment_name]):
                 intersection = np.count_nonzero(
