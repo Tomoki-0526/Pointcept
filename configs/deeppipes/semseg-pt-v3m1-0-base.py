@@ -1,3 +1,5 @@
+# python tools/train.py --config-file /home/szj/Pointcept/configs/deeppipes/semseg-pt-v3m1-0-base.py --num-gpus 8 --options save_path=/home/szj/Pointcept/log/deeppipes
+
 _base_ = ["../_base_/default_runtime.py"]
 # misc custom setting
 batch_size = 8  # bs: total bs in all gpus
@@ -45,7 +47,7 @@ model = dict(
         pdnorm_conditions=("ScanNet", "S3DIS", "Structured3D"),
     ),
     criteria=[
-        dict(type="CrossEntropyLoss", loss_weight=1.0, ignore_index=-1),
+        dict(type="FocalLoss", alpha=[0.0031, 0.1288, 0.0499, 0.2109, 0.2465, 0.2025, 0.1583], loss_weight=1.0, ignore_index=-1),
         dict(type="LovaszLoss", mode="multiclass", loss_weight=1.0, ignore_index=-1),
     ],
 )
