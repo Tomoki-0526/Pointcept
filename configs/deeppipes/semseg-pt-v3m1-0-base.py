@@ -47,7 +47,7 @@ model = dict(
         pdnorm_conditions=("ScanNet", "S3DIS", "Structured3D"),
     ),
     criteria=[
-        dict(type="FocalLoss", alpha=[0.0031, 0.1288, 0.0499, 0.2109, 0.2465, 0.2025, 0.1583], loss_weight=1.0, ignore_index=-1),
+        dict(type="FocalLoss", alpha=[3.5475e-09, 1.4940e-07, 5.7877e-08, 2.4463e-07, 2.8602e-07, 2.3498e-07, 1.8371e-07], loss_weight=1.0, ignore_index=-1),
         dict(type="LovaszLoss", mode="multiclass", loss_weight=1.0, ignore_index=-1),
     ],
 )
