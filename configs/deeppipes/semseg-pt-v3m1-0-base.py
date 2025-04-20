@@ -11,7 +11,7 @@ enable_amp = False
 # model settings
 model = dict(
     type="DefaultSegmentorV2",
-    num_classes=7,
+    num_classes=5,
     backbone_out_channels=64,
     backbone=dict(
         type="PT-v3m1",
@@ -47,7 +47,7 @@ model = dict(
         pdnorm_conditions=("ScanNet", "S3DIS", "Structured3D"),
     ),
     criteria=[
-        dict(type="FocalLoss", alpha=[0.0031, 0.1288, 0.0499, 0.2109, 0.2465, 0.2025, 0.1583], loss_weight=1.0, ignore_index=-1),
+        dict(type="FocalLoss", alpha=[0.0080, 0.3351, 0.1298, 0.2958, 0.2313], loss_weight=1.0, ignore_index=-1),
         dict(type="LovaszLoss", mode="multiclass", loss_weight=1.0, ignore_index=-1),
     ],
 )
@@ -75,14 +75,12 @@ type_names=[
     "pipe",
     "flange",
     "elbow",
-    "straight_tee",
-    "reduce_tee",
-    "straight_cross",
-    "reduce_cross",
+    "tee",
+    "cross",
 ],
 
 data = dict(
-    num_classes=7,
+    num_classes=5,
     ignore_index=-1,
     names=type_names,
     train=dict(
