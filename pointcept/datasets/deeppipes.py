@@ -81,7 +81,9 @@ class DeepPipesDataset(DefaultDataset):
         data_dict['name'] = name
         data_dict['split'] = self.split
         coord = np.loadtxt(os.path.join(data_name, 'coord.pts'), dtype=np.float32)
-        segment = np.loadtxt(os.path.join(data_name, 'label2.seg'))[:,3].astype(np.int8)
+        info = np.loadtxt(os.path.join(data_name, 'label3.seg'))
+
+        segment = info[:,8].astype(np.int8)
 
         coord, idx = resample_pcd(coord, self.num_point)
         segment = segment[idx]

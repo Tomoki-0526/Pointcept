@@ -11,7 +11,7 @@ enable_amp = False
 # model settings
 model = dict(
     type="DefaultSegmentorV2",
-    num_classes=5,
+    num_classes=2,
     backbone_out_channels=64,
     backbone=dict(
         type="PT-v3m1",
@@ -47,13 +47,14 @@ model = dict(
         pdnorm_conditions=("ScanNet", "S3DIS", "Structured3D"),
     ),
     criteria=[
-        dict(type="FocalLoss", alpha=[0.0080, 0.3351, 0.1298, 0.2958, 0.2313], loss_weight=1.0, ignore_index=-1),
+        dict(type="CrossEntropyLoss", loss_weight=1.0, ignore_index=-1),
         dict(type="LovaszLoss", mode="multiclass", loss_weight=1.0, ignore_index=-1),
     ],
 )
 
 # scheduler settings
-epoch = 300
+epoch = 100
+eval_epoch = 100
 optimizer = dict(type="AdamW", lr=0.001, weight_decay=0.01)
 scheduler = dict(
     type="OneCycleLR",
@@ -73,14 +74,11 @@ dataset_type = "DeepPipesDataset"
 data_root = "/home/szj/DeepPipes_Dataset-master"
 type_names=[
     "pipe",
-    "flange",
-    "elbow",
-    "tee",
-    "cross",
+    "fitting",
 ],
 
 data = dict(
-    num_classes=5,
+    num_classes=2,
     ignore_index=-1,
     names=type_names,
     train=dict(

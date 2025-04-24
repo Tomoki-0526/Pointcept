@@ -124,6 +124,9 @@ class SemSegEvaluator(HookBase):
             loss = output_dict["loss"]
             pred = output.max(1)[1]
             segment = input_dict["segment"]
+            num_classes = self.trainer.cfg.data.num_classes
+            self.trainer.logger.info(f"Pred bincount: {torch.bincount(pred, minlength=num_classes).cpu().numpy().tolist()}")
+            self.trainer.logger.info(f"GT bincount: {torch.bincount(segment, minlength=num_classes).cpu().numpy().tolist()}")
             if "origin_coord" in input_dict.keys():
                 idx, _ = pointops.knn_query(
                     1,
